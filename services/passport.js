@@ -3,6 +3,8 @@ const GoogleStrategy = require("passport-google-oauth20");
 const GithubStrategy = require("passport-github2");
 const keys = require("../config/keys");
 
+const User = require("../models/user");
+
 passport.use(
   new GoogleStrategy(
     {
