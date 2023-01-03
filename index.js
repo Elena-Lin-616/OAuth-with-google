@@ -22,4 +22,14 @@ passport.use(
   )
 );
 
-app.listen(5000);
+// todo 4: forward user's req to google = kick user to OAuth flow
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
+
+app.listen(3010, () => {
+  console.log("APP is listening on port 3010");
+});
