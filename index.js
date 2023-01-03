@@ -4,6 +4,7 @@ const app = express();
 // todo 1: require modules
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
+const GithubStrategy = require("passport-github2");
 const keys = require("./config/keys");
 // todo 2: infor passport how to use the strategy
 // 1. config -> customize how strategy behave inside of our app
@@ -25,6 +26,19 @@ passport.use(
   )
 );
 
+passport.use(
+  new GithubStrategy(
+    {
+      clientID: keys.GITHUB_CLIENT_ID,
+      clientSecret: keys.GITHUB_CLIENT_SECRET,
+      callbackURL: "/auth/github/callback",
+    },
+    (accessToken, refreshToken, profile, done) => {
+      console.log(profile);
+    }
+  )
+);
+
 // todo 4: forward user's req to google = kick user to OAuth flow
 app.get(
   "/auth/google",
@@ -35,6 +49,15 @@ app.get(
 
 // todo 5: OAuth callback
 app.get("/auth/google/callback", passport.authenticate("google"));
+
+// Try to add github
+app.get(
+  "/auth/github",
+  passport.authenticate("github", {
+    scope: ["user:email"],
+  })
+);
+app.get("/auth/github/callback", passport.authenticate("github"));
 
 app.listen(3010, () => {
   console.log("APP is listening on port 3010");
