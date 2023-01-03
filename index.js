@@ -16,8 +16,11 @@ passport.use(
       clientSecret: keys.GOOGLE_CLIENT_SECRET,
       callbackURL: "/auth/google/callback",
     },
-    (accessToken) => {
-      console.log(accessToken);
+    (accessToken, refreshToken, profile, done) => {
+      console.log("access token", accessToken);
+      console.log("refresh token", refreshToken);
+      console.log("profile", profile);
+      console.log("done", done);
     }
   )
 );
@@ -29,6 +32,9 @@ app.get(
     scope: ["profile", "email"],
   })
 );
+
+// todo 5: OAuth callback
+app.get("/auth/google/callback", passport.authenticate("google"));
 
 app.listen(3010, () => {
   console.log("APP is listening on port 3010");
