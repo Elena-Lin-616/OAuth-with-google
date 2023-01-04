@@ -7,11 +7,17 @@ const mongoose = require("mongoose");
 const User = mongoose.model("users");
 
 passport.serializeUser(function (user, done) {
-  done(null, user);
+  //use user instance id to generate token and put it into cookie
+  done(null, user._id);
 });
 
-passport.deserializeUser(function (user, done) {
-  done(null, user);
+passport.deserializeUser(function (id, done) {
+  // turn id to user instance
+  // call done function
+
+  User.findById(id).then((user) => {
+    done(null, user);
+  });
 });
 
 passport.use(
