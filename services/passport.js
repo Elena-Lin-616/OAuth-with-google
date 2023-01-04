@@ -6,6 +6,14 @@ const mongoose = require("mongoose");
 
 const User = mongoose.model("users");
 
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
+
 passport.use(
   new GoogleStrategy(
     {
@@ -15,6 +23,16 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       //  find or create user
+      User.findOne({ googleId: profile.id }).then((existedUser) => {
+        if (existedUser) {
+          // user record exist
+          done(null, existedUser);
+        } else {
+          new User({ googleId: profile.id })
+            .save()
+            .then((user) => done(null, user));
+        }
+      });
     }
   )
 );
